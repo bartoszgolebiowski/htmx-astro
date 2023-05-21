@@ -1,0 +1,73 @@
+---
+import StepNavigation from "../../components/StepNavigation.astro";
+import Layout from "../../layouts/Layout.astro";
+import { zfd } from "zod-form-data";
+import { ZodError } from "zod";
+import { getDefaultValues, submitValues } from "../../cookies";
+
+if (Astro.request.method === "POST") {
+  const schema = zfd.formData({
+    address: zfd.text(),
+    city: zfd.text(),
+  });
+  try {
+    const formData = await Astro.request.formData();
+    const formDataParsed = schema.parse(formData);
+    submitValues(Astro.cookies, "step2", formDataParsed);
+    return Astro.redirect("/steps/step-3", 302);
+  } catch (error) {
+    if (error instanceof ZodError) {
+      console.log(error);
+    }
+  }
+}
+const defaultValues = getDefaultValues(Astro.cookies, "step2");
+
+const firstStepAvailable = !!getDefaultValues(Astro.cookies, "step1")?.name;
+const secondStepAvailable = !!getDefaultValues(Astro.cookies, "step2")?.address;
+const thirdStepAvailable = !!getDefaultValues(Astro.cookies, "step3")
+  ?.cardNumber;
+---
+
+<Layout title="HTMX + Astro.build">
+  <StepNavigation
+    stepActive={2}
+    firstStepAvailable={firstStepAvailable}
+    secondStepAvailable={secondStepAvailable}
+    thirdStepAvailable={thirdStepAvailable}
+  />
+  <form class="mt-4 p-4 border border-gray-300 rounded-lg" method="post">
+    <label class="block mb-2">
+      Address
+      <input
+        class=`border border-gray-300 rounded-lg p-2 w-full `
+        name="address"
+        value={defaultValues?.address ?? ""}
+        required
+      /></label
+    >
+    <label class="block mb-2">
+      City
+      <input
+        class=`border border-gray-300 rounded-lg p-2 w-full `
+        type="text"
+        name="city"
+        value={defaultValues?.city ?? ""}
+        required
+      />
+    </label>
+    <div class="flex justify-between items-center mt-4">
+      <button
+        class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-lg"
+      >
+        <a href="/steps/step-1">Back</a>
+        <button
+          class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg"
+          type="submit"
+        >
+          Next
+        </button>
+      </button>
+    </div>
+  </form>
+</Layout>

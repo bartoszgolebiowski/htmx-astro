@@ -1,0 +1,27 @@
+---
+import { getCurrentStep } from "../cookiesHTMX";
+import Layout from "../layouts/Layout.astro";
+import Step1 from "./htmx/step-1.astro";
+import Step2 from "./htmx/step-2.astro";
+import Step3 from "./htmx/step-3.astro";
+import Summary from "./htmx/summary.astro";
+
+const Step = ((step) => {
+  switch (step) {
+    case 1:
+      return Step1;
+    case 2:
+      return Step2;
+    case 3:
+      return Step3;
+    case 4:
+      return Summary;
+    default:
+      return Step1;
+  }
+})(getCurrentStep(Astro.cookies));
+---
+
+<Layout title="HTMX + Astro.build">
+  <div id="content"><Step /></div>
+</Layout>

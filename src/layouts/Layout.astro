@@ -1,0 +1,51 @@
+---
+export interface Props {
+  title: string;
+}
+
+const { title } = Astro.props;
+---
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="description" content="HTMX + Astro.build" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+  </head>
+  <body>
+    <main>
+      <nav class="pb-10">
+        <p class="pb-10">{new Date().getTime()}</p>
+        <a
+          href="/htmx"
+          class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+          >HTMX</a
+        >
+        <a
+          href="/"
+          class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+          >MPA</a
+        >
+      </nav>
+      <slot />
+    </main>
+  </body>
+  <script
+    src="https://unpkg.com/htmx.org@1.9.2"
+    integrity="sha384-L6OqL9pRWyyFU3+/bjdSri+iIphTN/bvYyM37tICVyOJkWZLpP2vGn6VUEXgzg6h"
+    crossorigin="anonymous"
+  ></script>
+</html>
+
+<style scoped>
+  main {
+    padding: 1rem;
+    margin-left: auto;
+    margin-right: auto;
+    width: 24rem;
+  }
+</style>

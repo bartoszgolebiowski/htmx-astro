@@ -1,0 +1,78 @@
+---
+import StepNavigationHTMX from "../../components/StepNavigationHTMX.astro";
+import { zfd } from "zod-form-data";
+import { ZodError } from "zod";
+import { getDefaultValues, submitValues } from "../../cookiesHTMX";
+
+if (Astro.request.method === "POST") {
+  const schema = zfd.formData({
+    cardNumber: zfd.text(),
+    cardExpiry: zfd.text(),
+  });
+  try {
+    const formData = await Astro.request.formData();
+    const formDataParsed = schema.parse(formData);
+    submitValues(Astro.cookies, "step3", formDataParsed);
+    return Astro.redirect("/htmx/summary", 302);
+  } catch (error) {
+    if (error instanceof ZodError) {
+      console.log(error);
+    }
+  }
+}
+
+const defaultValues = getDefaultValues(Astro.cookies, "step3");
+const firstStepAvailable = !!getDefaultValues(Astro.cookies, "step1")?.name;
+const secondStepAvailable = !!getDefaultValues(Astro.cookies, "step2")?.address;
+const thirdStepAvailable = !!getDefaultValues(Astro.cookies, "step3")
+  ?.cardNumber;
+---
+
+<StepNavigationHTMX
+  stepActive={3}
+  firstStepAvailable={firstStepAvailable}
+  secondStepAvailable={secondStepAvailable}
+  thirdStepAvailable={thirdStepAvailable}
+/>
+<form
+  class="mt-4 p-4 border border-gray-300 rounded-lg"
+  hx-post="/htmx/step-3"
+  hx-target="#content"
+>
+  <label class="block mb-2">
+    Card number
+    <input
+      class=`border border-gray-300 rounded-lg p-2 w-full`
+      name="cardNumber"
+      value={defaultValues?.cardNumber ?? ""}
+      required
+    /></label
+  >
+
+  <label class="block mb-2">
+    Card expiry
+    <input
+      class=`border border-gray-300 rounded-lg p-2 w-full`
+      type="text"
+      name="cardExpiry"
+      value={defaultValues?.cardExpiry ?? ""}
+      required
+    />
+  </label>
+  <div class="flex justify-between items-center mt-4">
+    <button
+      class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-lg"
+      hx-get="/htmx/step-2"
+      hx-target="#content"
+      hx-swap="innerHTML"
+    >
+      Back
+    </button>
+    <button
+      class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg"
+      type="submit"
+    >
+      Preview
+    </button>
+  </div>
+</form>

@@ -1,0 +1,4 @@
+---
+import { getCurrentStep } from "../cookies";
+return Astro.redirect("steps/step-" + getCurrentStep(Astro.cookies), 302);
+---
