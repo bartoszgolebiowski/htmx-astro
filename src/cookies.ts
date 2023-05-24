@@ -52,13 +52,10 @@ export const submitValues = <T extends Steps>(cookies: AstroCookies,
     if (step === "step2") {
         multistep.currentStep = 3;
     }
-    if (step === "step3") {
-        multistep.currentStep = 4;
-    }
     multistep[step] = values;
-    cookies.set(STEP_COOKIE_NAME, JSON.stringify(multistep), { httpOnly: true, sameSite: "lax", secure: true });
+    cookies.set(STEP_COOKIE_NAME, JSON.stringify(multistep), { httpOnly: true, sameSite: "lax", secure: true, path: "/" });
 }
 
 export const clearCookies = (cookies: AstroCookies) => {
-    cookies.set(STEP_COOKIE_NAME, {}, { httpOnly: true, sameSite: "lax", secure: true });
+    cookies.delete(STEP_COOKIE_NAME, { path: "/", })
 }

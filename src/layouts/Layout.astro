@@ -20,17 +20,6 @@ const { title } = Astro.props;
     <main>
       <nav class="pb-10">
         <p class="pb-10">{new Date().getTime()}</p>
-        <a
-          href="/htmx"
-          class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-          >HTMX</a
-        >
-        <a
-          href="/"
-          class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-          >MPA</a
-        >
-      </nav>
       <slot />
     </main>
   </body>

@@ -1,6 +1,6 @@
 ---
 interface Props {
-  stepActive: 1 | 2 | 3;
+  stepActive: 1 | 2 | 3 | null;
   firstStepAvailable: boolean;
   secondStepAvailable: boolean;
   thirdStepAvailable: boolean;
@@ -22,20 +22,45 @@ const {
     ${stepActive === 1 ? "outline outline-2  outline-offset-2" : ""} 
     ${firstStepAvailable || stepActive === 1 ? "": "text-zinc-300 cursor-not-allowed [&>a]:cursor-not-allowed"}`
   >
-    <a href={firstStepAvailable ? "/steps/step-1" : "#"}> First step</a>
+    <a
+      href={firstStepAvailable ? "/steps/step-1" : "#"}
+      hx-disable={!firstStepAvailable}
+      hx-get="/htmx/step-1"
+      hx-target="#content"
+      hx-swap="innerHTML"
+      hx-replace-url="/steps/step-1"
+    >
+      First step</a
+    >
   </li>
   <li
     class=`inline-block rounded-lg p-4 
     ${stepActive === 2 ? "outline outline-2  outline-offset-2" : ""} 
     ${secondStepAvailable ||stepActive === 2? "":"text-zinc-300 cursor-not-allowed [&>a]:cursor-not-allowed"}`
   >
-    <a href={secondStepAvailable ? "/steps/step-2" : "#"}>Second step</a>
+    <a
+      href={secondStepAvailable ? "/steps/step-2" : "#"}
+      hx-disable={!secondStepAvailable}
+      hx-get="/htmx/step-2"
+      hx-target="#content"
+      hx-swap="innerHTML"
+      hx-replace-url="/steps/step-2">Second step</a
+    >
   </li>
   <li
     class=`inline-block rounded-lg p-4 
     ${stepActive === 3 ? "outline outline-2  outline-offset-2" : ""} 
     ${thirdStepAvailable ||stepActive === 3? "":"text-zinc-300 cursor-not-allowed [&>a]:cursor-not-allowed"}`
   >
-    <a href={thirdStepAvailable ? "/steps/step-3" : "#"}> Third step</a>
+    <a
+      href={thirdStepAvailable ? "/steps/step-3" : "#"}
+      hx-disable={!thirdStepAvailable}
+      hx-get="/htmx/step-3"
+      hx-target="#content"
+      hx-swap="innerHTML"
+      hx-replace-url="/steps/step-3"
+    >
+      Third step</a
+    >
   </li>
 </ul>
