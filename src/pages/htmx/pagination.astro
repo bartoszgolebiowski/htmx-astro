@@ -1,0 +1,130 @@
+---
+interface Post {
+  userId: number;
+  id: number;
+  title: string;
+  body: string;
+}
+
+const page = Astro.url.searchParams.get("_page") ?? "1";
+const limit = Astro.url.searchParams.get("_limit") ?? "10";
+const searchParams = new URLSearchParams({
+  _page: page,
+  _limit: limit,
+});
+
+const posts = (await fetch(
+  `https://jsonplaceholder.typicode.com/posts?${searchParams.toString()}`
+).then((res) => res.json())) as Post[];
+---
+
+<table
+  id="post-table"
+  class="border-spacing-0 border border-solid border-[black]"
+>
+  <caption
+    class="text-2xl font-[bold] p-2 border-b-[black] border-b border-solid"
+    >Posts</caption
+  >
+  <thead>
+    <tr class="border-b-0">
+      <th
+        class="m-0 p-2 border-r-[black] border-b-[black] border-b border-solid border-r"
+        >Id</th
+      >
+      <th
+        class="m-0 p-2 border-r-[black] border-b-[black] border-b border-solid border-r"
+        >UserId</th
+      >
+      <th
+        class="m-0 p-2 border-r-[black] border-b-[black] border-b border-solid border-r"
+        >Title</th
+      >
+      <th
+        class="m-0 p-2 border-r-[black] border-b-[black] border-b border-solid border-r"
+        >Body</th
+      >
+    </tr>
+  </thead>
+  <tbody>
+    {
+      posts.map((user) => (
+        <tr>
+          <td class="m-0 p-2 border-r-[black] border-b-[black] border-b border-solid border-r">
+            {user.id}
+          </td>
+          <td class="m-0 p-2 border-r-[black] border-b-[black] border-b border-solid border-r">
+            {user.userId}
+          </td>
+          <td class="m-0 p-2 border-r-[black] border-b-[black] border-b border-solid border-r">
+            {user.title.slice(0, 25)}
+          </td>
+          <td class="m-0 p-2 border-r-[black] border-b-[black] border-b border-solid border-r">
+            {user.body.slice(0, 25)}
+          </td>
+        </tr>
+      ))
+    }
+  </tbody>
+  <tfoot>
+    <tr >
+      <td colspan="3">
+        <a
+          class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg mr-10"
+          href={`?_page=${1}&_limit=10`}
+          hx-get=`/pagination?_page=${1}&_limit=10`
+          hx-target="#post-table"
+          hx-swap="outerHTML"
+          hx-push-url=`/pagination?_page=${1}&_limit=10`
+        >
+          10
+        </a>
+        <a
+          class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg mr-10"
+          href={`?_page=${1}&_limit=20`}
+          hx-get=`/pagination?_page=${1}&_limit=20`
+          hx-target="#post-table"
+          hx-swap="outerHTML"
+          hx-push-url=`/pagination?_page=${1}&_limit=20`
+        >
+          20
+        </a>
+        <a
+          class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg"
+          href={`?_page=${1}&_limit=50`}
+          hx-get=`/pagination?_page=${1}&_limit=50`
+          hx-target="#post-table"
+          hx-swap="outerHTML"
+          hx-push-url=`/pagination?_page=${1}&_limit=50`
+        >
+          50
+        </a>
+      </td>
+      <td colspan="1" class="flex justify-between">
+        <a
+          class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg"
+          href={page !== "1"
+            ? `?_page=${Number(page) - 1}&_limit=${limit}`
+            : "#"}
+          hx-disabled={page === "1"}
+          hx-get=`/pagination?_page=${Number(page) - 1}&_limit=${limit}`
+          hx-target="#post-table"
+          hx-swap="outerHTML"
+          hx-push-url=`/pagination?_page=${Number(page) - 1}&_limit=${limit}`
+        >
+          Prev
+        </a>
+        <a
+          class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg"
+          href={`?_page=${Number(page) + 1}&_limit=${limit}`}
+          hx-get=`/pagination?_page=${Number(page) + 1}&_limit=${limit}`
+          hx-target="#post-table"
+          hx-swap="outerHTML"
+          hx-push-url=`/pagination?_page=${Number(page) + 1}&_limit=${limit}`
+        >
+          Next
+        </a>
+      </td>
+    </tr>
+  </tfoot>
+</table>

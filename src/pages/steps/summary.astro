@@ -1,14 +1,11 @@
 ---
 import Layout from "../../layouts/Layout.astro";
-import { getDefaultValues, clearCookies } from "../../cookies";
-import StepNavigation from "../../components/StepNavigation.astro";
+import { stepAvailability, clearCookies } from "../../cookies";
+import SummaryHTMX from "../htmx/summary.astro";
 
-const valuesFirstStep = getDefaultValues(Astro.cookies, "step1")!;
-const valuesSecondStep = getDefaultValues(Astro.cookies, "step2")!;
-const valuesThirdStep = getDefaultValues(Astro.cookies, "step3")!;
-const firstStepAvailable = !!valuesFirstStep?.email;
-const secondStepAvailable = !!valuesSecondStep?.address;
-const thirdStepAvailable = !!valuesThirdStep?.cardExpiry;
+const { firstStepAvailable, secondStepAvailable, thirdStepAvailable } =
+  stepAvailability(Astro.cookies);
+
 const isFormFullfilled =
   firstStepAvailable && secondStepAvailable && thirdStepAvailable;
 
@@ -23,38 +20,8 @@ if (!isFormFullfilled) {
 }
 ---
 
-<Layout title="HTMX + Astro.build">
+<Layout title="HTMX/Multistep + Astro.build">
   <div id="content">
-    <StepNavigation
-      stepActive={null}
-      firstStepAvailable={firstStepAvailable}
-      secondStepAvailable={secondStepAvailable}
-      thirdStepAvailable={thirdStepAvailable}
-    />
-    <fieldset>
-      <legend>First step</legend>
-      <pre>{JSON.stringify(valuesFirstStep,null,2)}</pre>
-    </fieldset>
-    <fieldset>
-      <legend>Second step</legend>
-      <pre>{JSON.stringify(valuesSecondStep,null,2)}</pre>
-    </fieldset>
-    <fieldset>
-      <legend>Third step</legend>
-      <pre>{JSON.stringify(valuesThirdStep,null,2)}</pre>
-    </fieldset>
-    <form
-      action="/steps/summary"
-      method="POST"
-      hx-post="/steps/summary"
-      hx-target="#content"
-      hx-replace-url="/completed"
-    >
-      <button
-        type="submit"
-        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg"
-        >Submit</button
-      >
-    </form>
+    <SummaryHTMX />
   </div>
 </Layout>

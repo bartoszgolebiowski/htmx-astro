@@ -59,3 +59,16 @@ export const submitValues = <T extends Steps>(cookies: AstroCookies,
 export const clearCookies = (cookies: AstroCookies) => {
     cookies.delete(STEP_COOKIE_NAME, { path: "/", })
 }
+
+export const stepAvailability = (cookies: AstroCookies) => {
+    const firstStepAvailable = !!getDefaultValues(cookies, "step1")?.name;
+    const secondStepAvailable = !!getDefaultValues(cookies, "step2")?.address;
+    const thirdStepAvailable = !!getDefaultValues(cookies, "step3")
+        ?.cardNumber;
+
+    return {
+        firstStepAvailable,
+        secondStepAvailable,
+        thirdStepAvailable,
+    }
+}

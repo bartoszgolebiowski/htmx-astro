@@ -1,10 +1,10 @@
 ---
-import StepNavigation from "../../components/StepNavigation.astro";
 import Layout from "../../layouts/Layout.astro";
 import { zfd } from "zod-form-data";
 import { ZodError } from "zod";
-import { getDefaultValues, submitValues } from "../../cookies";
+import { stepAvailability, submitValues } from "../../cookies";
 import { isHXRequest } from "../../headers";
+import Step3HTMX from "../htmx/step-3.astro";
 
 if (Astro.request.method === "POST") {
   const schema = zfd.formData({
@@ -26,71 +26,15 @@ if (Astro.request.method === "POST") {
   }
 }
 
-const defaultValues = getDefaultValues(Astro.cookies, "step3");
-const firstStepAvailable = !!getDefaultValues(Astro.cookies, "step1")?.name;
-const secondStepAvailable = !!getDefaultValues(Astro.cookies, "step2")?.address;
-const thirdStepAvailable = !!getDefaultValues(Astro.cookies, "step3")
-  ?.cardNumber;
+const { secondStepAvailable } = stepAvailability(Astro.cookies);
 
-if (!firstStepAvailable) {
+if (!secondStepAvailable) {
   return Astro.redirect("/", 302);
 }
 ---
 
-<Layout title="HTMX + Astro.build">
+<Layout title="HTMX/Multistep + Astro.build">
   <div id="content">
-    <StepNavigation
-      stepActive={3}
-      firstStepAvailable={firstStepAvailable}
-      secondStepAvailable={secondStepAvailable}
-      thirdStepAvailable={thirdStepAvailable}
-    />
-    <form
-      class="mt-4 p-4 border border-gray-300 rounded-lg"
-      method="post"
-      hx-post="/steps/step-3"
-      hx-target="#content"
-      hx-swap="innerHTML"
-      hx-replace-url="/steps/summary"
-    >
-      <label class="block mb-2">
-        Card number
-        <input
-          class=`border border-gray-300 rounded-lg p-2 w-full`
-          name="cardNumber"
-          value={defaultValues?.cardNumber ?? ""}
-          required
-        /></label
-      >
-      <label class="block mb-2">
-        Card expiry
-        <input
-          class=`border border-gray-300 rounded-lg p-2 w-full`
-          type="text"
-          name="cardExpiry"
-          value={defaultValues?.cardExpiry ?? ""}
-          required
-        />
-      </label>
-      <div class="flex justify-between items-center mt-4">
-        <button
-          class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-lg"
-        >
-          <a
-            href="/steps/step-2"
-            hx-get="/htmx/step-2"
-            hx-target="#content"
-            hx-swap="innerHTML"
-            hx-replace-url="/steps/step-2">Back</a
-          >
-        </button>
-        <button
-          class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg"
-          type="submit"
-        >
-          Preview
-        </button>
-      </div>
-    </form>
+    <Step3HTMX />
   </div>
 </Layout>

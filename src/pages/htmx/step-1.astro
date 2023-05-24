@@ -1,14 +1,10 @@
 ---
-import { getDefaultValues } from "../../cookies";
 import StepNavigation from "../../components/StepNavigation.astro";
-
+import { getDefaultValues, stepAvailability } from "../../cookies";
 
 const defaultValues = getDefaultValues(Astro.cookies, "step1");
-
-const firstStepAvailable = !!getDefaultValues(Astro.cookies, "step1")?.name;
-const secondStepAvailable = !!getDefaultValues(Astro.cookies, "step2")?.address;
-const thirdStepAvailable = !!getDefaultValues(Astro.cookies, "step3")
-  ?.cardNumber;
+const { firstStepAvailable, secondStepAvailable, thirdStepAvailable } =
+  stepAvailability(Astro.cookies);
 ---
 
 <StepNavigation
@@ -17,36 +13,39 @@ const thirdStepAvailable = !!getDefaultValues(Astro.cookies, "step3")
   secondStepAvailable={secondStepAvailable}
   thirdStepAvailable={thirdStepAvailable}
 />
-    <form class="mt-4 p-4 border border-gray-300 rounded-lg" method="post"           hx-post="/steps/step-1"
-          hx-target="#content"
-          hx-swap="innerHTML"
-          hx-replace-url="/steps/step-2">
-      <label class="block mb-2">
-        Name
-        <input
-          class=`border border-gray-300 rounded-lg p-2 w-full`
-          name="name"
-          value={defaultValues?.name ?? ""}
-          required
-        />
-      </label>
-      <label class="block mb-2">
-        Email
-        <input
-          class=`border border-gray-300 rounded-lg p-2 w-full`
-          type="email"
-          name="email"
-          value={defaultValues?.email ?? ""}
-          required
-        />
-      </label>
-      <div class="flex justify-between items-center mt-4 flex-row-reverse">
-        <button
-          class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg"
-          type="submit"
-
-        >
-          Next
-        </button>
-      </div>
-    </form>
+<form
+  class="mt-4 p-4 border border-gray-300 rounded-lg w-80"
+  method="post"
+  hx-post="/steps/step-1"
+  hx-target="#content"
+  hx-swap="innerHTML"
+  hx-push-url="/steps/step-2"
+>
+  <label class="block mb-2">
+    Name
+    <input
+      class=`border border-gray-300 rounded-lg p-2 w-full`
+      name="name"
+      value={defaultValues?.name ?? ""}
+      required
+    />
+  </label>
+  <label class="block mb-2">
+    Email
+    <input
+      class=`border border-gray-300 rounded-lg p-2 w-full`
+      type="email"
+      name="email"
+      value={defaultValues?.email ?? ""}
+      required
+    />
+  </label>
+  <div class="flex justify-between items-center mt-4 flex-row-reverse">
+    <button
+      class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg"
+      type="submit"
+    >
+      Next
+    </button>
+  </div>
+</form>

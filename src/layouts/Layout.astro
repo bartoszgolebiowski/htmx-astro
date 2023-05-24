@@ -17,24 +17,27 @@ const { title } = Astro.props;
     <title>{title}</title>
   </head>
   <body>
-    <main>
+    <main class="p-4 ml-auto mr-auto flex flex-col">
       <nav class="pb-10">
         <p class="pb-10">{new Date().getTime()}</p>
+        <a
+          href="/"
+          class="text-2xl font-bold text-blue-500 hover:text-blue-700"
+        >
+          Multistep Form</a
+        >
+        <a
+          href="/pagination"
+          class="text-2xl font-bold text-red-500 hover:text-red-700 ml-4"
+          >Pagination</a
+        >
+      </nav>
       <slot />
     </main>
+    <script
+      src="https://unpkg.com/htmx.org@1.9.2"
+      integrity="sha384-L6OqL9pRWyyFU3+/bjdSri+iIphTN/bvYyM37tICVyOJkWZLpP2vGn6VUEXgzg6h"
+      crossorigin="anonymous"
+    ></script>
   </body>
-  <script
-    src="https://unpkg.com/htmx.org@1.9.2"
-    integrity="sha384-L6OqL9pRWyyFU3+/bjdSri+iIphTN/bvYyM37tICVyOJkWZLpP2vGn6VUEXgzg6h"
-    crossorigin="anonymous"
-  ></script>
 </html>
-
-<style scoped>
-  main {
-    padding: 1rem;
-    margin-left: auto;
-    margin-right: auto;
-    width: 24rem;
-  }
-</style>
