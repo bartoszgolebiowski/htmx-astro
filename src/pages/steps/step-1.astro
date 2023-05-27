@@ -21,8 +21,12 @@ if (Astro.request.method === "POST") {
     return Astro.redirect("/steps/step-2", 302);
   } catch (error) {
     if (error instanceof ZodError) {
-      console.log(error);
+      return new Response(undefined, {
+        status: 400,
+        statusText: error.message,
+      });
     }
+    return new Response(undefined, { status: 400 });
   }
 }
 ---
